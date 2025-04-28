@@ -10,8 +10,8 @@ public class Corpse extends Organism {
         this.foodValue = foodValue;
     }
 
-    public void decompose() {
-        // Logic for decomposition, eaten by fungus
+    public void consumed() {
+        // Logic for getting eaten by fungus or bacteria
     }
 
 

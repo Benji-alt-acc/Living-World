@@ -1,11 +1,12 @@
-package organisms;
+package organisms.multicellular.fungi;
+
+import organisms.Organism;
 
 public class Fungus extends Organism {
     private int size;
     private int age;
     private boolean isAlive;
     private String ID;
-    private String name;
 
     public Fungus(int size, int age) {
         this.size = size;
@@ -14,15 +15,15 @@ public class Fungus extends Organism {
         this.ID = generateID("F");
     }
 
-    public void grow() {
+    public void grow(int amount) {
         if (isAlive) {
-            size += 1; // Increase size by 1 unit
+            size += amount;
         }
     }
 
     public void propagate() {
         if (isAlive) {
-            // Logic for propagation (spreading spores)
+            // Logic for spreading spores
         }
     }
 

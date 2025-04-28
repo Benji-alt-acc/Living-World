@@ -16,7 +16,7 @@ public abstract class Organism {
         int idNum;
         do {
             idNum = 10000 + random.nextInt(90000); // Generate a random 5-digit number
-        } while (organismIDs[idNum % organismIDs.length] != null); // Ensure no collision
+        } while (organismIDs[idNum % organismIDs.length] != null); // Ensure no duplicate
         return type + idNum;
     }
 
@@ -32,11 +32,11 @@ public abstract class Organism {
     }
 
     public void breathe() {
-        // Breathe
+        // Breathe in O2/CO2 and breathe out the opposite
     }
 
     public void eaten() {
-        // Organism gets eaten
+        // Organism gets eaten, remove from world, return food value?
     }
 
 }

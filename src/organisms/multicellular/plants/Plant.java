@@ -1,4 +1,5 @@
-package organisms;
+package organisms.multicellular.plants;
+import organisms.Organism;
 
 public class Plant extends Organism {
     private int size;
@@ -16,17 +17,13 @@ public class Plant extends Organism {
         // Grow the plant
     }
 
-    public void breathe() {
-        // Breathe in CO2 and release O2
-    }
-
     public void photosynthesize() {
         breathe();
         // Photosynthesize (breathe and produce energy)
     }
 
     public void propagate() {
-        // Reproduce
+        // Spread seeds
     }
 
 }
