@@ -7,7 +7,8 @@ public class Plant extends Organism {
     private String name;
     private String ID;
     
-    public Plant(int size, int age) {
+    public Plant() {
+        super(10, 10, 0, 0, "DefaultName", "DefaultType", 0, 0, "DefaultCategory"); // Adjust arguments as needed
         this.size = size;
         this.age = age;
         this.ID = generateID("P");
@@ -15,6 +16,11 @@ public class Plant extends Organism {
 
     public void grow() {
         // Grow the plant
+    }
+
+    @Override
+    public boolean canMove() {
+        return false;
     }
 
     public void photosynthesize() {

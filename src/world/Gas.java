@@ -1,13 +1,19 @@
 package world;
-
 import java.util.ArrayList;
 import java.util.Random;
 
 public class Gas {
+    public String gasName;
     public boolean isOxygen;
     public boolean isCarbonDioxide;
+    public int lethalConcentration;
     public String ID;
     ArrayList<String>[] gasIDs = new ArrayList[999];
+
+    public Gas(int lethalConcentration, String gasname, String gasName){
+        this.lethalConcentration = lethalConcentration;
+        this.gasName = gasName;
+    }
 
     public void consume() {
         // Consume gas and delete from world

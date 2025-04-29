@@ -3,16 +3,22 @@ package organisms.multicellular.fungi;
 import organisms.Organism;
 
 public class Fungus extends Organism {
-    private int size;
+    private int size = 10;
     private int age;
     private boolean isAlive;
     private String ID;
 
-    public Fungus(int size, int age) {
-        this.size = size;
-        this.age = age;
+    public Fungus() {
+        super(10, 10, 0, 0, "F", "defaultName", 0, 0, "defaultType"); // Adjust the arguments as per the Organism constructor
+        this.size = 10;
+        this.age = 0;
         this.isAlive = true;
         this.ID = generateID("F");
+    }
+
+    @Override
+    public boolean canMove() {
+        return false;
     }
 
     public void grow(int amount) {

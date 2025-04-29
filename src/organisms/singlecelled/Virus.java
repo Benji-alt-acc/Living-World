@@ -7,6 +7,7 @@ public class Virus extends SingleCelled {
     public String ID;
 
     public Virus() {
+        super(100, 5, 0, 50, "defaultID", "Virus", 0, 0, "VirusSpecies");
         this.isAlive = true; // though viruses are not considered alive in the traditional sense, 
                              // we can set this to true for the sake of this simulation
         this.ID = generateID("V");

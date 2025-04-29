@@ -6,9 +6,10 @@ public class Herbivore extends Multicellular {
     private boolean isAlive;
     private String ID;
 
-    public Herbivore(int size, int age) {
-        this.size = size;
-        this.age = age;
+    public Herbivore() {
+        super(0, 10, 0, 0, "default1", "default2", 0, 0, "default3");
+        this.size = 0;
+        this.age = 0;
         this.isAlive = true;
         this.ID = generateID("H");
     }

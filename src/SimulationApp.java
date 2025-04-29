@@ -2,6 +2,10 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.*;
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
+import organisms.Organism;
 import organisms.multicellular.Carnivore;
 import organisms.multicellular.Herbivore;
 import organisms.multicellular.Omnivore;
@@ -13,50 +17,138 @@ import organisms.singlecelled.Bacteria;
 import organisms.singlecelled.Virus;
 import organisms.Corpse;
 import world.Gas;
+import organisms.animal.Tiger;
+import organisms.animal.Gorilla;
+import organisms.animal.Crocodile;
 
 public class SimulationApp {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         JFrame frame = new JFrame("A Living World");
         SimulationPanel panel = new SimulationPanel();
-
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
         frame.add(panel);
         frame.setVisible(true);
 
+        panel.spawnCreature("Fungus", 50, 50, panel);
+        panel.spawnCreature("Spore", 100, 100, panel);
+        panel.spawnCreature("Plant", 150, 150, panel);
+        panel.spawnCreature("Seed", 200, 200, panel);
+        panel.spawnCreature("Carnivore", 250, 250, panel);
+        panel.spawnCreature("Herbivore", 300, 300, panel);
+        panel.spawnCreature("Omnivore", 350, 350, panel);
+        panel.spawnCreature("Bacteria", 400, 400, panel);
+        panel.spawnCreature("Virus", 450, 450, panel);
+        panel.spawnCreature("Corpse", 250, 250, panel);
+        //panel.drawImage(sprite, 0, 0, panel);
+
         // Start the simulation
         panel.startSimulation();
+        panel.printCreatures();
     }
+
 }
 
 class SimulationPanel extends JPanel {
-    private final ArrayList<Creature> creatures = new ArrayList<>();
+    private Image sprite;
+
+    {
+        try {
+            sprite = ImageIO.read(new File("src/img/yourSpriteImage.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            sprite = null; // Fallback to null if the image cannot be loaded
+        }
+    }
+    private final ArrayList<Organism> creatures = new ArrayList<>();
     private final Random random = new Random();
 
-    public SimulationPanel() {
-        // Initialize creatures
-        for (int i = 0; i < 10; i++) {
-            creatures.add(new Creature(random.nextInt(800), random.nextInt(600)));
-        }
-        Plant plant1 = new Plant(1, 1);
-        Seed seed1 = new Seed();
-        Fungus fungus1 = new Fungus(1,1);
-        Spore spore1 = new Spore();
-        Carnivore carnivore1 = new Carnivore(1, 1);
-        Herbivore herbivore1 = new Herbivore(1, 1);
-        Omnivore omnivore1 = new Omnivore(1,1);
-        Bacteria bacteria1 = new Bacteria(1, 1);
-        Virus virus1 = new Virus();
-        Corpse corpse1 = new Corpse(1);
-
-
+    public void printCreatures() {
+        System.err.println(creatures);
     }
+
+    public void addCreature(Organism creature) {
+        creatures.add(creature);
+        System.out.println("Added creature: " + creature.getClass().getSimpleName() + " at (" + creature.getX() + ", " + creature.getY() + ")");
+    }
+
+    public void spawnCreature(String type, int x, int y, SimulationPanel panel) {
+        Organism newCreature = null;
+        switch (type) {
+            case "Fungus":
+            newCreature = new Fungus();
+            break;
+
+            case "Spore":
+            newCreature = new Spore();
+            break;
+
+            case "Plant":
+            newCreature = new Plant();
+            break;
+
+            case "Seed":
+            newCreature = new Seed();
+            break;
+
+            case "Carnivore":
+            newCreature = new Carnivore();
+            break;
+
+            case "Herbivore":
+            newCreature = new Herbivore();
+            break;
+
+            case "Omnivore":
+            newCreature = new Omnivore();
+            break;
+
+            case "Bacteria":
+            newCreature = new Bacteria();
+            break;
+
+            case "Virus":
+            newCreature = new Virus();
+            break;
+
+            case "Corpse":
+            newCreature = new Corpse();
+            break;
+
+            default:
+            System.out.println("Unknown type: " + type);
+            break;
+
+            // case "Gorilla":
+            // newCreature = new Gorilla();
+            // break;
+
+            
+        }
+        newCreature.setX(x);
+        newCreature.setY(y);
+        panel.addCreature(newCreature);
+    }
+
+    public SimulationPanel() {
+    
+}
 
     public void startSimulation() {
         Timer timer = new Timer(50, e -> {
             // Update creature positions
-            for (Creature creature : creatures) {
-                creature.move();
+            for (Organism creature : creatures) {
+                if (creature.canMove()) {
+                int newX = creature.getX() + random.nextInt(11) - 5; // Move randomly in X direction
+                int newY = creature.getY() + random.nextInt(11) - 5; // Move randomly in Y direction
+
+                // Ensure the creature stays within bounds
+                newX = Math.max(0, Math.min(getWidth() - creature.getSize(), newX));
+                newY = Math.max(0, Math.min(getHeight() - creature.getSize(), newY));
+
+                creature.setX(newX);
+                creature.setY(newY);
+                }
             }
             // Repaint the panel
             repaint();
@@ -68,38 +160,47 @@ class SimulationPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         // Draw background
+        g.drawImage(sprite, 100, 100, 200, 200, this);
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight());
 
         // Draw creatures
-        for (Creature creature : creatures) {
-            creature.draw(g);
+        for (Organism creature : creatures) {
+            draw(g, creature.getX(), creature.getY(), creature);
         }
     }
-}
 
-class Creature {
-    private int x, y;
-    private final int size = 5;
-    private final Random random = new Random();
-
-    public Creature(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    public void move() {
-        // Random movement
-        x += random.nextInt(11) - 5; // Move between -5 and +5
-        y += random.nextInt(11) - 5;
-
-        // Keep within bounds
-        x = Math.max(0, Math.min(780, x));
-        y = Math.max(0, Math.min(580, y));
-    }
-
-    public void draw(Graphics g) {
-        g.setColor(Color.BLUE);
-        g.fillOval(x, y, size, size);
+    private void draw(Graphics g, int x, int y, Organism creature) {
+        if (creature instanceof Fungus) {
+            g.setColor(Color.CYAN);
+            g.fillRect(x, y, creature.getSize(), creature.getSize());
+        } else if (creature instanceof Spore) {
+            g.setColor(Color.YELLOW);
+            g.fillOval(x, y, creature.getSize(), creature.getSize());
+        } else if (creature instanceof Plant) {
+            g.setColor(Color.GREEN);
+            g.fillRoundRect(x, y, creature.getSize(), creature.getSize(), 10, 10);
+        } else if (creature instanceof Seed) {
+            g.setColor(Color.ORANGE);
+            g.fillOval(x, y, creature.getSize(), creature.getSize());
+        } else if (creature instanceof Carnivore) {
+            g.setColor(Color.RED);
+            g.fillRect(x, y, creature.getSize(), creature.getSize());
+        } else if (creature instanceof Herbivore) {
+            g.setColor(Color.MAGENTA);
+            g.fillOval(x, y, creature.getSize(), creature.getSize());
+        } else if (creature instanceof Omnivore) {
+            g.setColor(Color.PINK);
+            g.fillRoundRect(x, y, creature.getSize(), creature.getSize(), 5, 5);
+        } else if (creature instanceof Bacteria) {
+            g.setColor(Color.GRAY);
+            g.fillOval(x, y, creature.getSize(), creature.getSize());
+        } else if (creature instanceof Virus) {
+            g.setColor(Color.BLACK);
+            g.fillRect(x, y, creature.getSize(), creature.getSize());
+        } else if (creature instanceof Corpse) {
+            g.setColor(Color.darkGray);
+            g.fillOval(x, y, creature.getSize(), creature.getSize());
+         }
     }
 }
