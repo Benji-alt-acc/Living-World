@@ -6,7 +6,7 @@ public class Carnivore extends Multicellular {
     private boolean isAlive;
     private String ID;
 
-    public Carnivore(int size, int age, String name) {
+    public Carnivore(int size, int age) {
         this.size = size;
         this.age = age;
         this.isAlive = true;

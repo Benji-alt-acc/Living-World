@@ -5,7 +5,7 @@ public class Corpse extends Organism {
     private int foodValue;
     private boolean isAlive = false; // Corpse is not alive
 
-    public Corpse(String ID, int foodValue) {
+    public Corpse(int foodValue) {
         this.ID = generateID("CR");
         this.foodValue = foodValue;
     }

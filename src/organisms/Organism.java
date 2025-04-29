@@ -12,6 +12,7 @@ public abstract class Organism {
     private boolean isAlive;
 
     public String generateID(String type) {
+        // This function takes in a string "type", and generates 5 random numbers after it, and returns the new ID string
         Random random = new Random();
         int idNum;
         do {
