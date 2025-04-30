@@ -7,8 +7,8 @@ public class Omnivore extends Multicellular {
     private String ID;
 
     public Omnivore() {
-        super(100, 10, 1, 50, "Multicellular", "Multicellular", 0, 0, "SpeciesName");
-        this.size = 0;
+        super(100, 50, 1, 50, "Multicellular", "Multicellular", 0, 0, "SpeciesName");
+        this.size = 50;
         this.age = 0;
         this.isAlive = true;
         this.ID = generateID("O");

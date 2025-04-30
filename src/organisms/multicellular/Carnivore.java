@@ -7,8 +7,8 @@ public class Carnivore extends Multicellular {
     private String ID;
 
     public Carnivore() {
-        super(0, 10, 0, 0, "default1", "default2", 0, 0, "default3"); // Replace with appropriate arguments
-        this.size = 0;
+        super(0, 50, 0, 0, "default1", "default2", 0, 0, "default3"); // Replace with appropriate arguments
+        this.size = 50;
         this.age = 0;
         this.isAlive = true;
         this.ID = generateID("C");
