@@ -47,7 +47,7 @@ public class SimulationApp {
         panel.printCreatures();
     }
 
-}
+} // ignore this comment
 
 class SimulationPanel extends JPanel {
     private Image bacteriaSprite = createSprite("bacteriaSprite.png"); // Load the sprite image for each organism type
