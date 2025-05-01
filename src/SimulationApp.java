@@ -1,25 +1,20 @@
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
-import javax.swing.*;
 import javax.imageio.ImageIO;
-import java.io.File;
-import java.io.IOException;
+import javax.swing.*;
+import organisms.Corpse;
 import organisms.Organism;
-import organisms.multicellular.Carnivore;
-import organisms.multicellular.Herbivore;
-import organisms.multicellular.Omnivore;
+import organisms.animal.Crocodile;
+import organisms.animal.Gorilla;
+import organisms.animal.Tiger;
 import organisms.multicellular.fungi.Fungus;
 import organisms.multicellular.fungi.Spore;
 import organisms.multicellular.plants.Plant;
 import organisms.multicellular.plants.Seed;
 import organisms.singlecelled.Bacteria;
 import organisms.singlecelled.Virus;
-import organisms.Corpse;
-import world.Gas;
-import organisms.animal.Tiger;
-import organisms.animal.Gorilla;
-import organisms.animal.Crocodile;
 
 public class SimulationApp {
     public static void main(String[] args) throws IOException {
@@ -61,6 +56,7 @@ class SimulationPanel extends JPanel {
     private Image gorillaSprite = createSprite("gorillaSprite.png");
     private Image crocodileSprite = createSprite("crocodileSprite.png");
     private Image gasSprite;
+    private Image grassBG = createSprite("grassBG.png");
     private final ArrayList<Organism> creatures = new ArrayList<>();
     private final Random random = new Random();
 
@@ -171,7 +167,7 @@ class SimulationPanel extends JPanel {
         super.paintComponent(g);
         // Draw background
         g.setColor(Color.WHITE);
-        g.fillRect(0, 0, getWidth(), getHeight());
+        g.drawImage(grassBG, 0, 0, getWidth(), getHeight(), this);
 
         // Draw creatures
         for (Organism creature : creatures) {
