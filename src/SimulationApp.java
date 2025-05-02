@@ -57,6 +57,10 @@ class SimulationPanel extends JPanel {
     private Image crocodileSprite = createSprite("crocodileSprite.png");
     private Image gasSprite;
     private Image grassBG = createSprite("grassBG.png");
+    private Image gorillaDownSprite = createSprite("gorillaDownSprite.png");
+    private Image gorillaUpSprite = createSprite("gorillaUpSprite.png");
+    private Image gorillaLeftSprite = createSprite("gorillaLeftSprite.png");
+    private Image gorillaRightSprite = createSprite("gorillaRightSprite.png");
     private final ArrayList<Organism> creatures = new ArrayList<>();
     private final Random random = new Random();
 
@@ -115,15 +119,15 @@ class SimulationPanel extends JPanel {
             break;
 
             case "Tiger":
-            newCreature = new Tiger(100, 90, 0, 0, "Tiger", "Tiger", x, y, "Tiger");
+            newCreature = new Tiger();
             break;
 
             case "Crocodile":
-            newCreature = new Crocodile(70, 80, 0, 0, "Crocodile", "Crocodile", x, y, "Crocodile");
+            newCreature = new Crocodile();
             break;
 
             case "Gorilla":
-            newCreature = new Gorilla(100, 90, 0, 0, "Gorilla", "Gorilla", x, y, "Gorilla");
+            newCreature = new Gorilla();
             break;
 
             default:
@@ -138,7 +142,7 @@ class SimulationPanel extends JPanel {
 
     public SimulationPanel() {
     
-}
+    }
 
     public void startSimulation() {
         Timer timer = new Timer(17, e -> {

@@ -7,7 +7,7 @@ public class Virus extends SingleCelled {
     public String ID;
 
     public Virus() {
-        super(100, 25, 0, 50, "defaultID", "Virus", 0, 0, "VirusSpecies");
+        super(100, 25, 0, 50, "defaultID", "Virus", 0, 0, 0, 0, "VirusSpecies");
         this.isAlive = true; 
         this.ID = generateID("V");
     }

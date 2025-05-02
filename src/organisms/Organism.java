@@ -15,9 +15,11 @@ public abstract class Organism {
     private String type;
     private int x;
     private int y;
+    private int dx;
+    private int dy;
     private String speciesname;
 
-    public Organism(int health, int size, int age, int hunger, String ID, String type, int x, int y, String speciesname) {
+    public Organism(int health, int size, int age, int hunger, String ID, String type, int x, int y, int dx, int dy, String speciesname) {
         this.health = health;
         this.size = size;
         this.age = age;
@@ -26,6 +28,8 @@ public abstract class Organism {
         this.type = type;
         this.x = x;
         this.y = y;
+        this.dx = dx;
+        this.dy = dy;
         this.speciesname = speciesname;
     }
 
@@ -93,6 +97,14 @@ public abstract class Organism {
         return y;
     }
 
+    public int getDx() {
+        return dx;
+    }
+
+    public int getDy() {
+        return dy;
+    }
+
     public String getSpeciesName() {
         return speciesname;
     }
@@ -103,6 +115,14 @@ public abstract class Organism {
 
     public void setY(int i) {
         this.y = i;
+    }
+
+    public void setDx(int i) {
+        this.dx = i;
+    }
+
+    public void setDy(int i) {
+        this.dy = i;
     }
 
     public void setHealth(int health) {

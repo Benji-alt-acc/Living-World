@@ -7,7 +7,7 @@ public class Bacteria extends SingleCelled {
     private String ID;
 
     public Bacteria() {
-        super(1, 25, 0, 0, "default1", "default2", 0, 0, "default3");
+        super(1, 25, 0, 0, "default1", "default2", 0, 0, 0, 0, "default3");
         this.size = 25;
         this.age = 0;
         this.isAlive = true;

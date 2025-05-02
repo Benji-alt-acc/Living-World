@@ -7,8 +7,8 @@ public abstract class Multicellular extends Organism{
     private int age;
     private boolean isAlive;
 
-    public Multicellular(int health, int size, int age, int hunger, String ID, String type, int x, int y, String speciesname) {
-        super(health, size, age, hunger, ID, type, x, y, speciesname);
+    public Multicellular(int health, int size, int age, int hunger, String ID, String type, int x, int y, int dx, int dy, String speciesname) {
+        super(health, size, age, hunger, ID, type, x, y, dx, dy, speciesname);
         this.size = size;
         this.age = age;
         this.isAlive = true;

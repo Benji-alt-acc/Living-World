@@ -6,7 +6,7 @@ public class Corpse extends Organism {
     private boolean isAlive = false; // Corpse is not alive
 
     public Corpse() {
-        super(0, 50, 0, 0, "Corpse", "defaultSpecies", 0, 0, "defaultBehavior"); // Pass appropriate values to match the Organism constructor
+        super(0, 50, 0, 0, "Corpse", "defaultSpecies", 0, 0, 0, 0, "defaultBehavior"); // Pass appropriate values to match the Organism constructor
         this.ID = generateID("CR");
         this.foodValue = foodValue;
     }
