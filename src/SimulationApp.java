@@ -25,15 +25,11 @@ public class SimulationApp {
         frame.add(panel);
         frame.setVisible(true);
         
-        populatePlants(panel, 100);
-        panel.spawnCreature("Fungus", 50, 50, panel);
-        panel.spawnCreature("Spore", 100, 100, panel);
-        panel.spawnCreature("Plant", 150, 150, panel);
-        panel.spawnCreature("Seed", 200, 200, panel);
-        panel.spawnCreature("Bacteria", 400, 400, panel);
-        panel.spawnCreature("Virus", 450, 450, panel);
+        populateMicro(panel, 100);
         panel.spawnCreature("Corpse", 250, 250, panel);
-        panel.spawnCreature("Gorilla", 800, 500, panel);
+        panel.spawnCreature("Gorilla", 500, 500, panel);
+        panel.spawnCreature("Gorilla", 100, 200, panel);
+        panel.spawnCreature("Gorilla", 600, 800, panel);
         panel.spawnCreature("Tiger", 700, 650, panel);
         panel.spawnCreature("Crocodile", 500, 500, panel);
 
@@ -61,8 +57,8 @@ public class SimulationApp {
         return random.nextInt(1080+1);
     }
 
-    static void populatePlants(SimulationPanel panel, int density) {
-        for (int i = 0; i<30; i++){
+    static void populateMicro(SimulationPanel panel, int density) {
+        for (int i = 0; i<50; i++){
             if(chance(density)){panel.spawnCreature("Fungus", randX(), randY(), panel);}
             if(chance(density)){panel.spawnCreature("Spore", randX(), randY(), panel);}
             if(chance(density)){panel.spawnCreature("Plant", randX(), randY(), panel);}
@@ -79,8 +75,12 @@ class SimulationPanel extends JPanel {
     private Image corpseSprite = createSprite("corpseSprite.png");
     private Image plantSprite = createSprite("plantSprite.png");
     private Image seedSprite = createSprite("seedSprite.png");
-    private Image fungusSprite = createSprite("fungusSprite.png");
+    private Image fungusSprite2 = createSprite("fungusSprite2.png");
     private Image sporeSprite = createSprite("sporeSprite.png");
+    private Image sporeSpriteLeft = createSprite("sporeSpriteLeft.png");
+    private Image sporeSpriteUp = createSprite("sporeSpriteUp.png");
+    private Image sporeSpriteDown = createSprite("sporeSpriteDown.png");
+    private Image sporeSpriteRight = createSprite("sporeSpriteRight.png");
     private Image tigerSprite = createSprite("tigerSprite.png");
     private Image gorillaSprite = createSprite("gorillaSprite.png");
     private Image crocodileSprite = createSprite("crocodileSprite.png");
@@ -174,7 +174,8 @@ class SimulationPanel extends JPanel {
     }
 
     public void startSimulation() {
-        int movechance = 10;
+        int movechance = 3; //chance of moving in given tick
+        int speed = 5; //this will probably be an attribute of organism class in the future
         Timer timer = new Timer(17, e -> {
             // Update creature positions
             for (Organism creature : creatures) {
@@ -185,8 +186,8 @@ class SimulationPanel extends JPanel {
                     creature.setDy(random.nextInt(3) - 1);
                 }
                 // Update position based on dx and dy
-                int newX = creature.getX() + creature.getDx() * (random.nextInt(1, 5));
-                int newY = creature.getY() + creature.getDy();
+                int newX = creature.getX() + creature.getDx() * speed;
+                int newY = creature.getY() + creature.getDy() * speed;
                 
                 //ensure boundaries
                 newX = Math.max(0, Math.min(getWidth() - creature.getSize(), newX));
@@ -218,8 +219,8 @@ class SimulationPanel extends JPanel {
     private void draw(Graphics g, int x, int y, Organism creature) {
         if (creature instanceof Fungus) {
             // Use the sprite image for Fungus
-            if (fungusSprite != null) {
-            g.drawImage(fungusSprite, x, y, creature.getSize(), creature.getSize(), this);
+            if (fungusSprite2 != null) {
+            g.drawImage(fungusSprite2, x, y, creature.getSize(), creature.getSize(), this);
             } else {
             // Fallback to cyan rectangle if the image is not loaded
             g.setColor(Color.CYAN);
@@ -228,7 +229,26 @@ class SimulationPanel extends JPanel {
         } else if (creature instanceof Spore) {
             // Use the sprite image for Spore
             if (sporeSprite != null) {
-            g.drawImage(sporeSprite, x, y, creature.getSize(), creature.getSize(), this);
+                    switch (creature.getDx()) {
+                        case 1:
+                            g.drawImage(sporeSpriteRight, x, y, creature.getSize(), creature.getSize(), this);
+                            break;
+                        case -1:
+                            g.drawImage(sporeSpriteLeft, x, y, creature.getSize(), creature.getSize(), this);
+                            break;
+                        case 0:
+                        switch (creature.getDy()) {
+                            case 1:
+                                g.drawImage(sporeSpriteDown, x, y, creature.getSize(), creature.getSize(), this);
+                                break;
+                            case -1:
+                                g.drawImage(sporeSpriteUp, x, y, creature.getSize(), creature.getSize(), this);
+                                break;
+                            default:
+                                g.drawImage(sporeSprite, x, y, creature.getSize(), creature.getSize(), this);
+                                break;
+                        }
+                }
             } else {
             // Fallback to yellow oval if the image is not loaded
             g.setColor(Color.YELLOW);
@@ -323,4 +343,4 @@ class SimulationPanel extends JPanel {
         }
     }
 }
-}
+    }
