@@ -24,7 +24,8 @@ public class SimulationApp {
         frame.setSize(1920, 1080);
         frame.add(panel);
         frame.setVisible(true);
-
+        
+        populatePlants(panel, 100);
         panel.spawnCreature("Fungus", 50, 50, panel);
         panel.spawnCreature("Spore", 100, 100, panel);
         panel.spawnCreature("Plant", 150, 150, panel);
@@ -32,17 +33,45 @@ public class SimulationApp {
         panel.spawnCreature("Bacteria", 400, 400, panel);
         panel.spawnCreature("Virus", 450, 450, panel);
         panel.spawnCreature("Corpse", 250, 250, panel);
-        panel.spawnCreature("Gorilla", 300, 300, panel);
+        panel.spawnCreature("Gorilla", 800, 500, panel);
         panel.spawnCreature("Tiger", 700, 650, panel);
         panel.spawnCreature("Crocodile", 500, 500, panel);
-        //panel.drawImage(sprite, 0, 0, panel);
 
         // Start the simulation
         panel.startSimulation();
         panel.printCreatures();
     }
 
-} // ignore this comment
+    // method to determine a random chance
+    public static boolean chance(int chance) {
+        final Random random = new Random();
+        int randomNumber = random.nextInt(101);
+        return randomNumber < chance;
+    }
+
+    // method to generate a random X coordinate
+    public static int randX() {
+        Random random = new Random();
+        return random.nextInt(1920+1);
+    }
+
+    // method to generate a random y coordinate
+    public static int randY() {
+        Random random = new Random();
+        return random.nextInt(1080+1);
+    }
+
+    static void populatePlants(SimulationPanel panel, int density) {
+        for (int i = 0; i<30; i++){
+            if(chance(density)){panel.spawnCreature("Fungus", randX(), randY(), panel);}
+            if(chance(density)){panel.spawnCreature("Spore", randX(), randY(), panel);}
+            if(chance(density)){panel.spawnCreature("Plant", randX(), randY(), panel);}
+            if(chance(density)){panel.spawnCreature("Seed", randX(), randY(), panel);}
+            if(chance(density)){panel.spawnCreature("Bacteria", randX(), randY(), panel);}
+            if(chance(density)){panel.spawnCreature("Virus", randX(), randY(), panel);}
+        }
+    }
+}
 
 class SimulationPanel extends JPanel {
     private Image bacteriaSprite = createSprite("bacteriaSprite.png"); // Load the sprite image for each organism type
@@ -145,17 +174,24 @@ class SimulationPanel extends JPanel {
     }
 
     public void startSimulation() {
+        int movechance = 10;
         Timer timer = new Timer(17, e -> {
             // Update creature positions
             for (Organism creature : creatures) {
-                if (creature.canMove()) {
-                int newX = creature.getX() + (random.nextBoolean() ? 1 : -1); // Move 1 unit in X direction
-                int newY = creature.getY() + (random.nextBoolean() ? 1 : -1); // Move 1 unit in Y direction
-
-                // Ensure the creature stays within bounds
+                if (creature.canMove()){
+                if (random.nextInt(100) < movechance) {
+                    //Change direction based on movechance
+                    creature.setDx(random.nextInt(3) - 1);
+                    creature.setDy(random.nextInt(3) - 1);
+                }
+                // Update position based on dx and dy
+                int newX = creature.getX() + creature.getDx() * (random.nextInt(1, 5));
+                int newY = creature.getY() + creature.getDy();
+                
+                //ensure boundaries
                 newX = Math.max(0, Math.min(getWidth() - creature.getSize(), newX));
                 newY = Math.max(0, Math.min(getHeight() - creature.getSize(), newY));
-
+                //Update creature pos
                 creature.setX(newX);
                 creature.setY(newY);
                 }
@@ -255,11 +291,25 @@ class SimulationPanel extends JPanel {
         } else if (creature instanceof Gorilla) {
             // Use the sprite image for Gorilla
             if (gorillaSprite != null) {
-            g.drawImage(gorillaSprite, x, y, creature.getSize(), creature.getSize(), this);
-            } else {
-            // Fallback to dark gray rectangle if the image is not loaded
-            g.setColor(Color.DARK_GRAY);
-            g.fillRect(x, y, creature.getSize(), creature.getSize());
+                switch (creature.getDx()) {
+                    case 1:
+                        g.drawImage(gorillaRightSprite, x, y, creature.getSize(), creature.getSize(), this);
+                        break;
+                    case -1:
+                        g.drawImage(gorillaLeftSprite, x, y, creature.getSize(), creature.getSize(), this);
+                        break;
+                    case 0:
+                    switch (creature.getDy()) {
+                        case 1:
+                            g.drawImage(gorillaDownSprite, x, y, creature.getSize(), creature.getSize(), this);
+                            break;
+                        case -1:
+                            g.drawImage(gorillaUpSprite, x, y, creature.getSize(), creature.getSize(), this);
+                            break;
+                        default:
+                            g.drawImage(gorillaSprite, x, y, creature.getSize(), creature.getSize(), this);
+                            break;
+                    }
             }
         } else if (creature instanceof Crocodile) {
             // Use the sprite image for Crocodile
@@ -272,4 +322,5 @@ class SimulationPanel extends JPanel {
             }
         }
     }
+}
 }
