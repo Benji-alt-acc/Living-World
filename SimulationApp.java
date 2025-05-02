@@ -7,7 +7,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import organisms.Corpse;
 import organisms.Organism;
-import organisms.animal.Animal;
 import organisms.animal.Crocodile;
 import organisms.animal.Gorilla;
 import organisms.animal.Tiger;
@@ -17,7 +16,6 @@ import organisms.multicellular.plants.Plant;
 import organisms.multicellular.plants.Seed;
 import organisms.singlecelled.Bacteria;
 import organisms.singlecelled.Virus;
-
 
 public class SimulationApp {
     public static void main(String[] args) throws IOException {
@@ -30,9 +28,9 @@ public class SimulationApp {
         
         panel.spawnCreature("Gorilla", 500, 500, panel);
         panel.spawnCreature("Gorilla", 100, 100, panel);
-        panel.spawnCreature("Crocodile", 900, 500, panel);
-        panel.spawnCreature("Crocodile", 500, 900, panel);
-        panel.spawnCreature("Crocodile", 100, 0, panel);
+        panel.spawnCreature("Gorilla", 900, 500, panel);
+        panel.spawnCreature("Gorilla", 500, 900, panel);
+        panel.spawnCreature("Gorilla", 100, 0, panel);
 
 
         // panel.spawnCreature("Corpse", 250, 250, panel);
@@ -98,10 +96,6 @@ class SimulationPanel extends JPanel {
     private Image gorillaUpSprite = createSprite("gorillaUpSprite.png");
     private Image gorillaLeftSprite = createSprite("gorillaLeftSprite.png");
     private Image gorillaRightSprite = createSprite("gorillaRightSprite.png");
-    private Image crocodileDownSprite = createSprite("crocodileDownSprite.png");
-    private Image crocodileUpSprite = createSprite("crocodileUpSprite.png");
-    private Image crocodileLeftSprite = createSprite("crocodileLeftSprite.png");
-    private Image crocodileRightSprite = createSprite("crocodileRightSprite.png");
     private final ArrayList<Organism> creatures = new ArrayList<>();
     private final Random random = new Random();
 
@@ -119,23 +113,12 @@ class SimulationPanel extends JPanel {
     }
 
     public void test() {
-        ArrayList<Organism> creatures1 = new ArrayList<>(creatures);
-        for (Organism creature1 : creatures1) {
+        Iterator<Organism> iterator = creatures.iterator();
+        for (Organism creature1 : creatures) {
             Organism creature2 = isNear(creature1);
-            //collision handling
-            if (creature2 != null) {
+            if (creature2 != null && !(creature2 instanceof Corpse)) {
                 System.out.println(creature1.getID() + " is near to " + creature2.getID());
-                if (creature1 instanceof Animal && creature2 instanceof Animal) {
-                    int creature1Strength = ((Animal)creature1).getStrength();
-                    int creature2Strength = ((Animal)creature2).getStrength();
-                }
-                creatures.remove(creature1);
-                for (Organism creatureX : creatures) {
-                    System.out.println(creatureX.getID());
-                    if (creatureX instanceof Gorilla) {
-                        System.out.println(((Gorilla) creatureX).getStrength());
-                    }
-                }
+                iterator.remove();
             }
         }
     }
@@ -236,8 +219,8 @@ class SimulationPanel extends JPanel {
     }
 
     public void startSimulation() {
-        int movechance = 10; //chance of moving directions in given tick
-        int speed = 1; //this will probably be an attribute of organism class in the future
+        int movechance = 2; //chance of moving directions in given tick
+        int speed = 3; //this will probably be an attribute of organism class in the future
         Timer timer = new Timer(17, e -> {
             // Update creature positions
             for (Organism creature : creatures) {
@@ -257,12 +240,11 @@ class SimulationPanel extends JPanel {
                 //Update creature pos
                 creature.setX(newX);
                 creature.setY(newY);
-                // test();
+                test();
                 }
             }
             
             // Repaint the panel
-            test();
             repaint();
         });
         timer.start();
@@ -279,25 +261,6 @@ class SimulationPanel extends JPanel {
         for (Organism creature : creatures) {
             draw(g, creature.getX(), creature.getY(), creature);
         }
-    }
-
-    private void showMessage(String text, int x, int y){
-        JLabel messageLabel = new JLabel(text, SwingConstants.CENTER);
-        messageLabel.setBounds(x, y, 300, 100);
-        messageLabel.setOpaque(true); 
-        messageLabel.setBackground(new Color(255, 255, 200));
-        messageLabel.setForeground(Color.BLACK); 
-        messageLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        messageLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        this.add(messageLabel);
-        this.repaint();
-
-        Timer timer = new Timer(2000, e -> {
-            this.remove(messageLabel);
-            this.repaint();
-        });
-        timer.setRepeats(false);
-        timer.start();
     }
 
     private void draw(Graphics g, int x, int y, Organism creature) {
@@ -414,29 +377,17 @@ class SimulationPanel extends JPanel {
                             g.drawImage(gorillaSprite, x, y, creature.getSize(), creature.getSize(), this);
                             break;
                     }
-                }
             }
         } else if (creature instanceof Crocodile) {
-                switch (creature.getDx()) {
-                    case 1:
-                        g.drawImage(crocodileRightSprite, x, y, creature.getSize(), creature.getSize()/2, this);
-                        break;
-                    case -1:
-                        g.drawImage(crocodileLeftSprite, x, y, creature.getSize(), creature.getSize()/2, this);
-                        break;
-                    case 0:
-                switch (creature.getDy()) {
-                    case 1:
-                        g.drawImage(crocodileDownSprite, x, y, creature.getSize(), creature.getSize(), this);
-                        break;
-                    case -1:
-                        g.drawImage(crocodileUpSprite, x, y, creature.getSize(), creature.getSize(), this);
-                        break;
-                    default:
-                        g.drawImage(crocodileSprite, x, y, creature.getSize(), creature.getSize(), this);
-                        break;
-                    }
-                }
+            // Use the sprite image for Crocodile
+            if (crocodileSprite != null) {
+            g.drawImage(crocodileSprite, x, y, creature.getSize(), creature.getSize(), this);
+            } else {
+            // Fallback to green rectangle if the image is not loaded
+            g.setColor(Color.GREEN);
+            g.fillRect(x, y, creature.getSize(), creature.getSize());
+            }
         }
     }
 }
+    }

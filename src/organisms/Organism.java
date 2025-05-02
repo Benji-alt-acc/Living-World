@@ -18,19 +18,21 @@ public abstract class Organism {
     private int dx;
     private int dy;
     private String speciesname;
+    // private int strength;
 
     public Organism(int health, int size, int age, int hunger, String ID, String type, int x, int y, int dx, int dy, String speciesname) {
         this.health = health;
         this.size = size;
         this.age = age;
         this.hunger = hunger;
-        this.ID = generateID(type);
+        this.ID = generateID(ID);
         this.type = type;
         this.x = x;
         this.y = y;
         this.dx = dx;
         this.dy = dy;
         this.speciesname = speciesname;
+        // this.strength = strength;
     }
 
     public String generateID(String type) {
@@ -82,7 +84,7 @@ public abstract class Organism {
     }
 
     public String getID() {
-        return ID;
+        return this.ID;
     }
 
     public String getType() {

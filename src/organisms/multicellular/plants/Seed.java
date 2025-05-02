@@ -5,7 +5,7 @@ public class Seed extends Organism {
     private String ID;
     
     public Seed() {
-        super(0, 25, 0, 0, "Seed", "PlantType", 1, 1, 0, 0, "SeedDescription"); // Pass appropriate arguments to the Organism constructor
+        super(0, 25, 0, 0, "Seed", "SeedType", 1, 1, 0, 0, "SeedSpecies"); // Pass appropriate arguments to the Organism constructor
         this.ID = generateID("S");
     }
 

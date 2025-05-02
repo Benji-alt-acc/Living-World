@@ -9,7 +9,7 @@ public class Fungus extends Organism {
     private String ID;
 
     public Fungus() {
-        super(10, 50, 0, 0, "F", "defaultName", 0, 0, 0, 0, "defaultType"); // Adjust the arguments as per the Organism constructor
+        super(10, 50, 0, 0, "Fungus", "FungusType", 0, 0, 0, 0, "FungusSpecies"); // Adjust the arguments as per the Organism constructor
         this.size = 50;
         this.age = 0;
         this.isAlive = true;

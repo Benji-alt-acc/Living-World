@@ -5,9 +5,10 @@ public class Bacteria extends SingleCelled {
     private int age;
     private boolean isAlive;
     private String ID;
+    private String hostID;
 
     public Bacteria() {
-        super(1, 25, 0, 0, "default1", "default2", 0, 0, 0, 0, "default3");
+        super(1, 25, 0, 0, "Bacteria", "BacteriaType", 0, 0, 0, 0, "BacteriaSpecies");
         this.size = 25;
         this.age = 0;
         this.isAlive = true;

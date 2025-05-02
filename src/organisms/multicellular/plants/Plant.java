@@ -8,7 +8,7 @@ public class Plant extends Organism {
     private String ID;
     
     public Plant() {
-        super(10, 50, 0, 0, "DefaultName", "DefaultType", 0, 0, 0, 0, "DefaultCategory"); // Adjust arguments as needed
+        super(10, 50, 0, 0, "Plant", "PlantType", 0, 0, 0, 0, "PlantSpecies"); // Adjust arguments as needed
         this.size = size;
         this.age = age;
         this.ID = generateID("P");

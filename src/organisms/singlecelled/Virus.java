@@ -5,9 +5,10 @@ public class Virus extends SingleCelled {
     private int age;
     private boolean isAlive;
     public String ID;
+    private String hostID;
 
     public Virus() {
-        super(100, 25, 0, 50, "defaultID", "Virus", 0, 0, 0, 0, "VirusSpecies");
+        super(100, 25, 0, 50, "Virus", "VirusType", 0, 0, 0, 0, "VirusSpecies");
         this.isAlive = true; 
         this.ID = generateID("V");
     }
