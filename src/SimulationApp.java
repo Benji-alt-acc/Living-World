@@ -25,7 +25,7 @@ public class SimulationApp {
         frame.add(panel);
         frame.setVisible(true);
         
-        populateMicro(panel, 100);
+        populateMicro(panel, 20);
         panel.spawnCreature("Corpse", 250, 250, panel);
         panel.spawnCreature("Gorilla", 500, 500, panel);
         panel.spawnCreature("Gorilla", 100, 200, panel);
