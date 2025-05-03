@@ -125,16 +125,111 @@ class SimulationPanel extends JPanel {
             //collision handling
             if (creature2 != null) {
                 System.out.println(creature1.getID() + " is near to " + creature2.getID());
-                if (creature1 instanceof Animal && creature2 instanceof Animal) {
-                    int creature1Strength = ((Animal)creature1).getStrength();
-                    int creature2Strength = ((Animal)creature2).getStrength();
+                switch (creature1.getClass().getSimpleName() + "-" + creature2.getClass().getSimpleName()) {
+                    case "Crocodile-Gorilla":
+                    case "Gorilla-Crocodile":
+                        // Define interaction between Crocodile and Gorilla
+                        break;
+                    case "Tiger-Fungus":
+                    case "Fungus-Tiger":
+                        // Define interaction between Tiger and Fungus
+                        break;
+                    case "Gorilla-Plant":
+                    case "Plant-Gorilla":
+                        // Define interaction between Gorilla and Plant
+                        break;
+                    case "Crocodile-Tiger":
+                    case "Tiger-Crocodile":
+                        // Define interaction between Crocodile and Tiger
+                        break;
+                    case "Crocodile-Fungus":
+                    case "Fungus-Crocodile":
+                        // Define interaction between Crocodile and Fungus
+                        break;
+                    case "Gorilla-Tiger":
+                    case "Tiger-Gorilla":
+                        // Define interaction between Gorilla and Tiger
+                        break;
+                    case "Gorilla-Fungus":
+                    case "Fungus-Gorilla":
+                        // Define interaction between Gorilla and Fungus
+                        break;
+                    case "Virus-Gorilla":
+                    case "Gorilla-Virus":
+                        // Define interaction between Virus and Gorilla
+                        break;
+                    case "Virus-Crocodile":
+                    case "Crocodile-Virus":
+                        // Define interaction between Virus and Crocodile
+                        break;
+                    case "Virus-Tiger":
+                    case "Tiger-Virus":
+                        // Define interaction between Virus and Tiger
+                        break;
+                    case "Bacteria-Gorilla":
+                    case "Gorilla-Bacteria":
+                        // Define interaction between Bacteria and Gorilla
+                        break;
+                    case "Bacteria-Crocodile":
+                    case "Crocodile-Bacteria":
+                        // Define interaction between Bacteria and Crocodile
+                        break;
+                    case "Bacteria-Tiger":
+                    case "Tiger-Bacteria":
+                        // Define interaction between Bacteria and Tiger
+                        break;
+                    case "Corpse-Gorilla":
+                    case "Gorilla-Corpse":
+                        // Define interaction between Corpse and Gorilla
+                        break;
+                    case "Corpse-Crocodile":
+                    case "Crocodile-Corpse":
+                        // Define interaction between Corpse and Crocodile
+                        break;
+                    case "Corpse-Tiger":
+                    case "Tiger-Corpse":
+                        // Define interaction between Corpse and Tiger
+                        break;
+                    case "Corpse-Bacteria":
+                    case "Bacteria-Corpse":
+                        // Define interaction between Corpse and Bacteria
+                        break;
+                    case "Seed-Corpse":
+                    case "Corpse-Seed":
+                        // Define interaction between corpse and seed
+                        break;
+                    case "Spore-Corpse":
+                    case "Corpse-Spore":
+                        // Define interaction between corpse and seed
+                        break;
+                    case "Crocodile-Plant":
+                    case "Plant-Crocodile":
+                    case "Tiger-Plant":
+                    case "Plant-Tiger":
+                    case "Virus-Plant":
+                    case "Plant-Virus":
+                    case "Virus-Fungus":
+                    case "Fungus-Virus":
+                    case "Bacteria-Plant":
+                    case "Plant-Bacteria":
+                    case "Bacteria-Fungus":
+                    case "Fungus-Bacteria":
+                    case "Corpse-Plant":
+                    case "Plant-Corpse":
+                    case "Corpse-Fungus":
+                    case "Fungus-Corpse":
+                    case "Corpse-Virus":
+                    case "Virus-Corpse":
+                    case "Virus-Bacteria":
+                    case "Bacteria-Virus":
+                        // LEAVE EMPTY, NO INTERACTION
+                        break;
+                    default:
+                        // Default case for undefined interactions
+                        break;
                 }
-                creatures.remove(creature1);
                 for (Organism creatureX : creatures) {
                     System.out.println(creatureX.getID());
-                    if (creatureX instanceof Gorilla) {
-                        System.out.println(((Gorilla) creatureX).getStrength());
-                    }
                 }
             }
         }
