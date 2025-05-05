@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -28,21 +27,26 @@ public class SimulationApp {
         frame.add(panel);
         frame.setVisible(true);
         
-        panel.spawnCreature("Gorilla", 500, 500, panel);
-        panel.spawnCreature("Gorilla", 100, 100, panel);
-        panel.spawnCreature("Crocodile", 900, 500, panel);
-        panel.spawnCreature("Crocodile", 500, 900, panel);
-        panel.spawnCreature("Crocodile", 100, 0, panel);
+        panel.spawnCreature("Gorilla", SimulationApp.randX(), SimulationApp.randY(), panel);
+        panel.spawnCreature("Gorilla", SimulationApp.randX(), SimulationApp.randY(), panel);
+        panel.spawnCreature("Gorilla", SimulationApp.randX(), SimulationApp.randY(), panel);
+        panel.spawnCreature("Gorilla", SimulationApp.randX(), SimulationApp.randY(), panel);
+        panel.spawnCreature("Gorilla", SimulationApp.randX(), SimulationApp.randY(), panel);
+        panel.spawnCreature("Crocodile", SimulationApp.randX(), SimulationApp.randY(), panel);
+        panel.spawnCreature("Crocodile", SimulationApp.randX(), SimulationApp.randY(), panel);
+        panel.spawnCreature("Crocodile", SimulationApp.randX(), SimulationApp.randY(), panel);
+        panel.spawnCreature("Crocodile", SimulationApp.randX(), SimulationApp.randY(), panel);
+        panel.spawnCreature("Crocodile", SimulationApp.randX(), SimulationApp.randY(), panel);
+        panel.spawnCreature("Crocodile", SimulationApp.randX(), SimulationApp.randY(), panel);
+        panel.spawnCreature("Crocodile", SimulationApp.randX(), SimulationApp.randY(), panel);
+        panel.spawnCreature("Crocodile", SimulationApp.randX(), SimulationApp.randY(), panel);
+        panel.spawnCreature("Tiger", SimulationApp.randX(), SimulationApp.randY(), panel);
+        panel.spawnCreature("Tiger", SimulationApp.randX(), SimulationApp.randY(), panel);
+        panel.spawnCreature("Tiger", SimulationApp.randX(), SimulationApp.randY(), panel);
+        panel.spawnCreature("Tiger", SimulationApp.randX(), SimulationApp.randY(), panel);
+        panel.spawnCreature("Tiger", SimulationApp.randX(), SimulationApp.randY(), panel);
+        populateMicro(panel, 20);
 
-
-        // panel.spawnCreature("Corpse", 250, 250, panel);
-        // panel.spawnCreature("Gorilla", 500, 500, panel);
-        // panel.spawnCreature("Gorilla", 100, 200, panel);
-        // panel.spawnCreature("Gorilla", 600, 800, panel);
-        // panel.spawnCreature("Tiger", 700, 650, panel);
-        // panel.spawnCreature("Crocodile", 500, 500, panel);
-
-        // Start the simulation
         panel.startSimulation();
     }
 
@@ -65,11 +69,22 @@ public class SimulationApp {
         return random.nextInt(1080+1);
     }
 
+    // NOTES FOR USING populateMicro FUNCTION, DO NOT DELETE!!!
+    /**
+     * Populates the simulation panel with various types of creatures based on the specified density.
+     * 
+     * @param panel  The simulation panel where creatures will be spawned.
+     * @param density The density factor influencing the likelihood of spawning each creature type.
+     *                A higher density increases the chances of spawning creatures.
+     * 
+     * <p><b>Note:</b> It is recommended not to use a density value beyond 33, as it may lead to 
+     * excessive creature spawning and potentially degrade performance.</p>
+     */
     static void populateMicro(SimulationPanel panel, int density) {
         for (int i = 0; i<50; i++){
-            if(chance(density)){panel.spawnCreature("Fungus", randX(), randY(), panel);}
+            if(chance(density * 3)){panel.spawnCreature("Fungus", randX(), randY(), panel);}
             if(chance(density)){panel.spawnCreature("Spore", randX(), randY(), panel);}
-            if(chance(density)){panel.spawnCreature("Plant", randX(), randY(), panel);}
+            if(chance(density * 3)){panel.spawnCreature("Plant", randX(), randY(), panel);}
             if(chance(density)){panel.spawnCreature("Seed", randX(), randY(), panel);}
             if(chance(density)){panel.spawnCreature("Bacteria", randX(), randY(), panel);}
             if(chance(density)){panel.spawnCreature("Virus", randX(), randY(), panel);}
@@ -78,7 +93,7 @@ public class SimulationApp {
 }
 
 class SimulationPanel extends JPanel {
-    private Image bacteriaSprite = createSprite("bacteriaSprite.png"); // Load the sprite image for each organism type
+    private Image bacteriaSprite = createSprite("bacteriaSprite.png"); // creatre the sprite image/s for each organism type
     private Image virusSprite = createSprite("virusSprite.png");
     private Image corpseSprite = createSprite("corpseSprite.png");
     private Image plantSprite = createSprite("plantSprite.png");
@@ -110,7 +125,7 @@ class SimulationPanel extends JPanel {
             if (!creature.getID().equals(checkCreature.getID())) {
                 int distanceX = Math.abs(creature.getX() - checkCreature.getX());
                 int distanceY = Math.abs(creature.getY() - checkCreature.getY());
-                if (distanceX <= 50 && distanceY <= 50) {
+                if (distanceX <= 75 && distanceY <= 75) {
                     return creature;
                     }
                 }
@@ -123,85 +138,287 @@ class SimulationPanel extends JPanel {
         for (Organism creature1 : creatures1) {
             Organism creature2 = isNear(creature1);
             //collision handling
-            if (creature2 != null) {
-                System.out.println(creature1.getID() + " is near to " + creature2.getID());
+            if (creature2 != null && (!(creature1.isPaused())) && (!(creature2.isPaused()))) {
                 switch (creature1.getClass().getSimpleName() + "-" + creature2.getClass().getSimpleName()) {
                     case "Crocodile-Gorilla":
                     case "Gorilla-Crocodile":
-                        // Define interaction between Crocodile and Gorilla
-                        break;
+
+                    if ((((Animal) creature1).getStrength() > ((Animal) creature2).getStrength()) && creature1.getHunger() > 30) {       // if creature1 stronger than creature2 AND creature1 hunger over 30...
+                        ((Animal) creature1).eat(creature2);
+                        creatures.remove(creature2);
+                        creature1.pauseInteractions();
+                    } else if ((((Animal) creature1).getStrength() == ((Animal) creature2).getStrength())) {    // if strengths are equal...
+                        if (creature1.getHunger() > 30 && creature2.getHunger() > 30) {                         // if both creatures hunger > 30, one lives, one dies
+                            if (new Random().nextBoolean()) {
+                                ((Animal) creature1).eat(creature2);
+                                creatures.remove(creature2);
+                                creature1.pauseInteractions();
+                            } else {
+                                ((Animal) creature2).eat(creature1);
+                                creatures.remove(creature1);
+                                creature2.pauseInteractions();
+                            }
+                        } else if (creature1.getHunger() > 30) {            // if only creature1 hunger is over 30, 50% chance to eat creature2
+                            if (new Random().nextBoolean()) {
+                                ((Animal) creature1).eat(creature2);
+                                creatures.remove(creature2);
+                                creature1.pauseInteractions();
+                            }
+                        } else if (creature2.getHunger() > 30) {            // if only creature2 hunger is over 30, 50% chance to eat creature1
+                            if (new Random().nextBoolean()) {
+                                ((Animal) creature2).eat(creature1);
+                                creatures.remove(creature1);
+                                creature2.pauseInteractions();
+                            }
+                        }
+                    } else if ((((Animal) creature2).getStrength() > ((Animal) creature2).getStrength()) && creature2.getHunger() > 30) {    // if creature2 stronger than creature1 AND creature2 hunger over 30...
+                        ((Animal) creature2).eat(creature1);
+                        creatures.remove(creature1);
+                        creature2.pauseInteractions();
+                    }
+                    break;
+
                     case "Tiger-Fungus":
                     case "Fungus-Tiger":
                         // Define interaction between Tiger and Fungus
                         break;
+
                     case "Gorilla-Plant":
                     case "Plant-Gorilla":
-                        // Define interaction between Gorilla and Plant
-                        break;
+                    Organism gorilla = (creature1 instanceof Gorilla) ? creature1 : creature2;
+                    Organism plant = (creature1 instanceof Plant) ? creature1 : creature2;
+
+                    if (gorilla.getHunger() > 30) {     // if gorilla hunger over 30, eat plant
+                        ((Animal)gorilla).eat(plant);
+                        plant.decreaseSize(75);
+                        if (plant.getSize() < 0) {
+                            creatures.remove(plant);
+                        }
+                    }
+                    break;
+
                     case "Crocodile-Tiger":
                     case "Tiger-Crocodile":
-                        // Define interaction between Crocodile and Tiger
-                        break;
+
+                    if ((((Animal) creature1).getStrength() > ((Animal) creature2).getStrength()) && creature1.getHunger() > 30) {       // if creature1 stronger than creature2 AND creature1 hunger over 30...
+                        ((Animal) creature1).eat(creature2);
+                        creatures.remove(creature2);
+                        creature1.pauseInteractions();
+                    } else if ((((Animal) creature1).getStrength() == ((Animal) creature2).getStrength())) {    // if strengths are equal...
+                        if (creature1.getHunger() > 30 && creature2.getHunger() > 30) {                         // if both creatures hunger > 30, one lives, one dies
+                            if (new Random().nextBoolean()) {
+                                ((Animal) creature1).eat(creature2);
+                                creatures.remove(creature2);
+                                creature1.pauseInteractions();
+                            } else {
+                                ((Animal) creature2).eat(creature1);
+                                creatures.remove(creature1);
+                                creature2.pauseInteractions();
+                            }
+                        } else if (creature1.getHunger() > 30) {            // if only creature1 hunger is over 30, 50% chance to eat creature2
+                            if (new Random().nextBoolean()) {
+                                ((Animal) creature1).eat(creature2);
+                                creatures.remove(creature2);
+                                creature1.pauseInteractions();
+                            }
+                        } else if (creature2.getHunger() > 30) {            // if only creature2 hunger is over 30, 50% chance to eat creature1
+                            if (new Random().nextBoolean()) {
+                                ((Animal) creature2).eat(creature1);
+                                creatures.remove(creature1);
+                                creature2.pauseInteractions();
+                            }
+                        }
+                    } else if ((((Animal) creature2).getStrength() > ((Animal) creature2).getStrength()) && creature2.getHunger() > 30) {    // if creature2 stronger than creature1 AND creature2 hunger over 30...
+                        ((Animal) creature2).eat(creature1);
+                        creatures.remove(creature1);
+                        creature2.pauseInteractions();
+                    }
+                    break;
+
                     case "Crocodile-Fungus":
                     case "Fungus-Crocodile":
                         // Define interaction between Crocodile and Fungus
                         break;
+
                     case "Gorilla-Tiger":
                     case "Tiger-Gorilla":
-                        // Define interaction between Gorilla and Tiger
-                        break;
+
+                    if ((((Animal) creature1).getStrength() > ((Animal) creature2).getStrength()) && creature1.getHunger() > 30) {       // if creature1 stronger than creature2 AND creature1 hunger over 30...
+                        ((Animal) creature1).eat(creature2);
+                        creatures.remove(creature2);
+                        creature1.pauseInteractions();
+                    } else if ((((Animal) creature1).getStrength() == ((Animal) creature2).getStrength())) {    // if strengths are equal...
+                        if (creature1.getHunger() > 30 && creature2.getHunger() > 30) {                         // if both creatures hunger > 30, one lives, one dies
+                            if (new Random().nextBoolean()) {
+                                ((Animal) creature1).eat(creature2);
+                                creatures.remove(creature2);
+                                creature1.pauseInteractions();
+                            } else {
+                                ((Animal) creature2).eat(creature1);
+                                creatures.remove(creature1);
+                                creature2.pauseInteractions();
+                            }
+                        } else if (creature1.getHunger() > 30) {            // if only creature1 hunger is over 30, 50% chance to eat creature2
+                            if (new Random().nextBoolean()) {
+                                ((Animal) creature1).eat(creature2);
+                                creatures.remove(creature2);
+                                creature1.pauseInteractions();
+                            }
+                        } else if (creature2.getHunger() > 30) {            // if only creature2 hunger is over 30, 50% chance to eat creature1
+                            if (new Random().nextBoolean()) {
+                                ((Animal) creature2).eat(creature1);
+                                creatures.remove(creature1);
+                                creature2.pauseInteractions();
+                            }
+                        }
+                    } else if ((((Animal) creature2).getStrength() > ((Animal) creature2).getStrength()) && creature2.getHunger() > 30) {    // if creature2 stronger than creature1 AND creature2 hunger over 30...
+                        ((Animal) creature2).eat(creature1);
+                        creatures.remove(creature1);
+                        creature2.pauseInteractions();
+                    }
+                    break;
+
                     case "Gorilla-Fungus":
                     case "Fungus-Gorilla":
-                        // Define interaction between Gorilla and Fungus
+                        Organism gorilla1 = (creature1 instanceof Gorilla) ? creature1 : creature2;
+                        Organism fungus = (creature1 instanceof Fungus) ? creature1 : creature2;
+
+                        if (gorilla1.getHunger() > 30) {   // if gorilla hunger over 30, eat fungus
+                            ((Animal)gorilla1).eat(fungus);
+                            fungus.decreaseSize(75);
+                            if (fungus.getSize() < 0) {
+                                creatures.remove(fungus);
+                            }
+                        }
                         break;
+                    
+                    case "Gorilla-Gorilla":
+                        if ((creature1.getHunger() < 60) && (creature2.getHunger() < 60) && (creature1.getAge() > 25) && (creature2.getAge() > 25)) {
+                            if (new Random().nextBoolean()) {
+                                reproduce(creature1);
+                                creature1.setHunger(60);
+                                creature2.setHunger(60);
+                                creature1.pauseInteractions();
+                                creature2.pauseInteractions();
+                            }
+                        }
+                        break;
+
+                    case "Tiger-Tiger":
+                        if ((creature1.getHunger() < 60) && (creature2.getHunger() < 60) && (creature1.getAge() > 25) && (creature2.getAge() > 25)) {
+                            if (new Random().nextBoolean()) {
+                                reproduce(creature1);
+                                creature1.setHunger(60);
+                                creature2.setHunger(60);
+                                creature1.pauseInteractions();
+                                creature2.pauseInteractions();
+                            }
+                        }
+                        break;
+
+                    case "Crocodile-Crocodile":
+                        if ((creature1.getHunger() < 60) && (creature2.getHunger() < 60) && (creature1.getAge() > 25) && (creature2.getAge() > 25)) {
+                            if (new Random().nextBoolean()) {
+                                reproduce(creature1);
+                                creature1.setHunger(60);
+                                creature2.setHunger(60);
+                                creature1.pauseInteractions();
+                                creature2.pauseInteractions();
+                            }
+                        }
+                        break;
+
                     case "Virus-Gorilla":
                     case "Gorilla-Virus":
                         // Define interaction between Virus and Gorilla
                         break;
+
                     case "Virus-Crocodile":
                     case "Crocodile-Virus":
                         // Define interaction between Virus and Crocodile
                         break;
+
                     case "Virus-Tiger":
                     case "Tiger-Virus":
                         // Define interaction between Virus and Tiger
                         break;
+
                     case "Bacteria-Gorilla":
                     case "Gorilla-Bacteria":
                         // Define interaction between Bacteria and Gorilla
                         break;
+
                     case "Bacteria-Crocodile":
                     case "Crocodile-Bacteria":
                         // Define interaction between Bacteria and Crocodile
                         break;
+
                     case "Bacteria-Tiger":
                     case "Tiger-Bacteria":
                         // Define interaction between Bacteria and Tiger
                         break;
+
                     case "Corpse-Gorilla":
                     case "Gorilla-Corpse":
                         // Define interaction between Corpse and Gorilla
                         break;
+
                     case "Corpse-Crocodile":
                     case "Crocodile-Corpse":
                         // Define interaction between Corpse and Crocodile
                         break;
+
                     case "Corpse-Tiger":
                     case "Tiger-Corpse":
                         // Define interaction between Corpse and Tiger
                         break;
+
                     case "Corpse-Bacteria":
                     case "Bacteria-Corpse":
                         // Define interaction between Corpse and Bacteria
                         break;
+
                     case "Seed-Corpse":
                     case "Corpse-Seed":
-                        // Define interaction between corpse and seed
+                        // When seed meets corpse, seed "consumes" corpse to become plant
+                        int plantX = 0;
+                        int plantY = 0;
+                        if (creature1 instanceof Corpse) {
+                            plantX = creature1.getX();
+                            plantY = creature1.getY();
+                        } else {
+                            plantX = creature2.getX();
+                            plantY = creature2.getY();
+                        }
+                        Plant newPlant = new Plant();
+                        newPlant.setX(plantX);
+                        newPlant.setY(plantY);
+                        creatures.add(newPlant);
+                        creatures.remove(creature1);
+                        creatures.remove(creature2);
                         break;
+
                     case "Spore-Corpse":
                     case "Corpse-Spore":
-                        // Define interaction between corpse and seed
-                        break;
+                        // When spore meets corpse, spore "consumes" corpse to become fungus
+                    int newX = 0; 
+                    int newY = 0; 
+                    if (creature1 instanceof Corpse) {
+                        newX = creature1.getX();
+                        newY = creature1.getY();
+                    }
+                    else {
+                        newX = creature2.getX();
+                        newY = creature2.getY();
+                    }
+                    Fungus newFungus = new Fungus();
+                    newFungus.setX(newX);
+                    newFungus.setY(newY);
+                    creatures.add(newFungus);
+                    creatures.remove(creature1);
+                    creatures.remove(creature2);
+                    break;
+
                     case "Crocodile-Plant":
                     case "Plant-Crocodile":
                     case "Tiger-Plant":
@@ -222,14 +439,28 @@ class SimulationPanel extends JPanel {
                     case "Virus-Corpse":
                     case "Virus-Bacteria":
                     case "Bacteria-Virus":
-                        // LEAVE EMPTY, NO INTERACTION
+                    case "Plant-Seed":
+                    case "Seed-Plant":
+                    case "Fungus-Spore":
+                    case "Spore-Fungus":
+                    case "Seed-Fungus":
+                    case "Fungus-Seed":
+                    case "Seed-Spore":
+                    case "Spore-Seed":
+                    case "Plant-Spore":
+                    case "Spore-Plant":
+                    case "Plant-Fungus":
+                    case "Fungus-Plant":
+                    case "Spore-Spore":
+                    case "Seed-Seed":
+                    case "Plant-Plant":
+                    case "Fungus-Fungus":
+                        // no interaction
                         break;
+
                     default:
-                        // Default case for undefined interactions
+                        // System.err.println("ERROR: Interaction does not exist for " + creature1.getID() + " and " + creature2.getID()); // error message if interaction is invalid (FOR TESTING)
                         break;
-                }
-                for (Organism creatureX : creatures) {
-                    System.out.println(creatureX.getID());
                 }
             }
         }
@@ -246,17 +477,62 @@ class SimulationPanel extends JPanel {
     creatures.set(index, corpse);
     }
 
-    public void printCreatures() {
-        System.err.println(creatures);
-    }
-
-    public void setInvisible(Organism creature) {
-        creature.setSize(0);
-    }
-
     public void addCreature(Organism creature) {
         creatures.add(creature);
         System.out.println("Added creature: " + creature.getClass().getSimpleName() + " at (" + creature.getX() + ", " + creature.getY() + ")");
+    }
+
+    public void reproduce(Organism creatureToReproduce) {
+        switch (creatureToReproduce.getClass().getSimpleName()) {
+            case "Fungus":
+            // Logic for reproducing Fungus
+            Spore newSpore = new Spore();
+            newSpore.setX(creatureToReproduce.getX() + 10);
+            newSpore.setY(creatureToReproduce.getY() + 10);
+            creatures.add(newSpore);
+            System.out.println(creatureToReproduce.getID() + " reproduced!");
+            break;
+
+            case "Plant":
+            // Logic for reproducing Plant
+            Seed newSeed = new Seed();
+            newSeed.setX(creatureToReproduce.getX() + 10);
+            newSeed.setY(creatureToReproduce.getY() + 10);
+            creatures.add(newSeed);
+            System.out.println(creatureToReproduce.getID() + " reproduced!");
+            break;
+
+            case "Gorilla":
+            // Logic for reproducing Gorilla
+            Gorilla newGorilla = new Gorilla();
+            newGorilla.setX(creatureToReproduce.getX() + 20);
+            newGorilla.setY(creatureToReproduce.getY() + 20);
+            creatures.add(newGorilla);
+            System.out.println(creatureToReproduce.getID() + " reproduced!");
+            break;
+
+            case "Tiger":
+            // Logic for reproducing Tiger
+            Tiger newTiger = new Tiger();
+            newTiger.setX(creatureToReproduce.getX() + 20);
+            newTiger.setY(creatureToReproduce.getY() + 20);
+            creatures.add(newTiger);
+            System.out.println(creatureToReproduce.getID() + " reproduced!");
+            break;
+
+            case "Crocodile":
+            // Logic for reproducing Crocodile
+            Crocodile newCrocodile = new Crocodile();
+            newCrocodile.setX(creatureToReproduce.getX() + 20);
+            newCrocodile.setY(creatureToReproduce.getY() + 20);
+            creatures.add(newCrocodile);
+            System.out.println(creatureToReproduce.getID() + " reproduced!");
+            break;
+
+            default:
+            System.out.println("Reproduction logic not defined for: " + creatureToReproduce.getClass().getSimpleName());
+            break;
+        }
     }
 
     public Image createSprite(String filename) {
@@ -330,10 +606,72 @@ class SimulationPanel extends JPanel {
     
     }
 
+    public void incrementTime() {              // anything in here will be run every 5 seconds
+        ArrayList<Organism> creaturesCopy = new ArrayList<>(creatures);
+        for (Organism creature : creaturesCopy) {
+            creature.increaseAge(1);
+            if (creature instanceof Animal) {     // applies only to animals
+                creature.increaseHunger(2);   // hunger increases by 2 every 5 seconds
+                if (creature.getHunger() > 79 && ((Animal)creature).getStrength() > 45) {
+                    ((Animal)creature).setStrength(45);  // reduce strength to 45 if hunger greater than 79
+                }
+                if (creature.getHunger() < 80 && ((Animal)creature).getStrength() < 90) {
+                    ((Animal)creature).setStrength(90);  // return strength to 90 if hunger was satisfied
+                }
+                if (creature.getHunger() > 120 || creature.getAge() > 200) { // if animal hunger exceeds 100 (no food for 4.16 minutes), or age exceeds 200 (16 minutes), animal becomes corpse (dies)
+                    becomeCorpse(creature);
+                }
+            }
+            else if (!(creature instanceof Animal)) { // if creature is not instance of Animal
+                if ((creature instanceof Plant) || (creature instanceof Fungus)) { // if plant or fungus...
+                    int randomGrowth = new Random().nextInt(4); // Generate a random number between 0 and 3
+                    creature.increaseSize(randomGrowth); // grow plant/fungus size by random amount
+                    if (creature.getSize() > 100) {  // creature reproduces (seed or spore) when size is over 100 (every 50 seconds or so)
+                        reproduce(creature);
+                        creature.decreaseSize(50);
+                    }
+                }
+                else if (creature instanceof Seed) {
+                    if (creature.getAge() > 100) {
+                        Plant newPlant = new Plant();
+                        newPlant.setX(creature.getX());
+                        newPlant.setY(creature.getY());
+                        creatures.add(newPlant);
+                        creatures.remove(creature);
+                    }
+                }
+                else if (creature instanceof Spore) {
+                    if (creature.getAge() > 100) {
+                        Fungus newFungus = new Fungus();
+                        newFungus.setX(creature.getX());
+                        newFungus.setY(creature.getY());
+                        creatures.add(newFungus);
+                        creatures.remove(creature);
+                    }
+                }
+                
+            }
+            if (creature.isPaused()) {     // resume any paused creatures
+            creature.resumeInteractions();
+            }
+        }
+    }
+
+    public String getStats(Organism creature) {
+        int age = creature.getAge();
+        int hunger = creature.getHunger();
+        int health = creature.getHealth();
+        String ID = creature.getID();
+        int size = creature.getSize();
+
+        return "ID: " + ID + ", Age: " + age + ", Hunger: " + hunger + ", Health: " + health + ", Size: " + size;
+    }
+
     public void startSimulation() {
-        int movechance = 10; //chance of moving directions in given tick
+        int movechance = 3; // chance (out of 100) of moving directions in given tick
         int speed = 1; //this will probably be an attribute of organism class in the future
-        Timer timer = new Timer(17, e -> {
+
+        Timer movementTimer = new Timer(17, e -> { // runs ~60 times per second 
             // Update creature positions
             for (Organism creature : creatures) {
                 if (creature.canMove()){
@@ -352,7 +690,6 @@ class SimulationPanel extends JPanel {
                 //Update creature pos
                 creature.setX(newX);
                 creature.setY(newY);
-                // test();
                 }
             }
             
@@ -360,7 +697,16 @@ class SimulationPanel extends JPanel {
             test();
             repaint();
         });
-        timer.start();
+        movementTimer.start();
+        Timer incrementTimeTimer = new Timer(5000, e -> { // runs every 5 seconds
+            incrementTime();
+            // for (Organism creature : creatures) {  
+            //     if (creature instanceof Animal) {
+            //     System.out.println(getStats(creature));         // for testing purposes, prints stats of all Animals
+            //     }
+            // }                                                  
+        });
+        incrementTimeTimer.start();
     }
 
     @Override

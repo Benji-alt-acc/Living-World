@@ -11,13 +11,13 @@ public abstract class Organism {
     private int age;
     private int hunger;
     private String ID;
-    private boolean isAlive;
     private String type;
     private int x;
     private int y;
     private int dx;
     private int dy;
     private String speciesname;
+    private boolean isPaused;
     // private int strength;
 
     public Organism(int health, int size, int age, int hunger, String ID, String type, int x, int y, int dx, int dy, String speciesname) {
@@ -32,7 +32,7 @@ public abstract class Organism {
         this.dx = dx;
         this.dy = dy;
         this.speciesname = speciesname;
-        // this.strength = strength;
+        this.isPaused = false;
     }
 
     public String generateID(String type) {
@@ -47,12 +47,16 @@ public abstract class Organism {
         return newID;
     }
 
-    public void die(String orgID) {
-        if (organismIDs.contains(orgID)) {
-            organismIDs.remove(orgID); // Remove organism from the list of IDs
-            this.isAlive = false;      // Set organism to dead (becomes corpse)
-            // INSERT LOGIC TO TURN ORGANISM INTO CORPSE (remove organism, spawn corpse)
-        }
+    public void pauseInteractions() {                        // pauses interactions for 5 seconds (resumeInteractions runs every 5 seconds (in incrementTime function) to reset isPaused to false)
+        isPaused = true;
+    }
+
+    public void resumeInteractions() {
+        isPaused = false;
+    }
+
+    public boolean isPaused() {
+        return isPaused;
     }
 
     public void breathe() {
@@ -61,10 +65,6 @@ public abstract class Organism {
 
     public boolean canMove() {
         return true;
-    }
-
-    public void eaten() {
-        // Organism gets eaten, remove from world, return food value?
     }
 
     public int getHealth() {
@@ -79,7 +79,7 @@ public abstract class Organism {
         return age;
     }
 
-    public int gethunger() {
+    public int getHunger() {
         return hunger;
     }
 
@@ -139,7 +139,27 @@ public abstract class Organism {
         this.age = age;
     }
 
-    public void sethunger(int hunger) {
+    public void increaseAge(int val) {
+        age += val;
+    }
+
+    public void increaseHunger(int val) {
+        hunger += val;
+    }
+
+    public void increaseSize(int val) {
+        size += val;
+    }
+
+    public void decreaseHunger(int val) {
+        hunger -= val;
+    }
+
+    public void decreaseSize(int val) {
+        size -= val;
+    }
+
+    public void setHunger(int hunger) {
         this.hunger = hunger;
     }
 

@@ -8,9 +8,9 @@ public class Virus extends SingleCelled {
     private String hostID;
 
     public Virus() {
-        super(100, 25, 0, 50, "Virus", "VirusType", 0, 0, 0, 0, "VirusSpecies");
+        super(100, 25, 0, 0, "Virus", "VirusType", 0, 0, 0, 0, "VirusSpecies");
         this.isAlive = true; 
-        this.ID = generateID("V");
+        this.ID = generateID(ID);
     }
 
     public void infiltrate(String hostID) {
