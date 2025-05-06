@@ -18,7 +18,7 @@ public abstract class Animal extends Organism {
     }
 
     public void eat(Organism entree) {
-        System.out.println(this.getType() + " IS EATING " + entree.getType());
+        System.out.println(this.getClass().getSimpleName() + " is eating " + entree.getClass().getSimpleName() + "!");
         this.setHealth(this.getHealth()+(entree.getSize()/5));
         super.decreaseHunger(entree.getSize());
         if (this.getHunger() < 0) {

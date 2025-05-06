@@ -10,6 +10,7 @@ import organisms.animal.Animal;
 import organisms.animal.Crocodile;
 import organisms.animal.Gorilla;
 import organisms.animal.Tiger;
+import organisms.animal.Deer;
 import organisms.multicellular.fungi.Fungus;
 import organisms.multicellular.fungi.Spore;
 import organisms.multicellular.plants.Plant;
@@ -82,17 +83,18 @@ public class SimulationApp {
      */
     static void populateMicro(SimulationPanel panel, int density) {
         for (int i = 0; i<50; i++){
-            if(chance(density * 3)){panel.spawnCreature("Fungus", randX(), randY(), panel);}
+            if(chance(density * 2)){panel.spawnCreature("Fungus", randX(), randY(), panel);}
             if(chance(density)){panel.spawnCreature("Spore", randX(), randY(), panel);}
             if(chance(density * 3)){panel.spawnCreature("Plant", randX(), randY(), panel);}
-            if(chance(density)){panel.spawnCreature("Seed", randX(), randY(), panel);}
-            if(chance(density)){panel.spawnCreature("Bacteria", randX(), randY(), panel);}
-            if(chance(density)){panel.spawnCreature("Virus", randX(), randY(), panel);}
+            if(chance(density/2)){panel.spawnCreature("Seed", randX(), randY(), panel);}
+            if(chance(density/2)){panel.spawnCreature("Bacteria", randX(), randY(), panel);}
+            if(chance(density/2)){panel.spawnCreature("Virus", randX(), randY(), panel);}
         }
     }
 }
 
 class SimulationPanel extends JPanel {
+    public int dayTracker = 0;
     private Image bacteriaSprite = createSprite("bacteriaSprite.png"); // creatre the sprite image/s for each organism type
     private Image virusSprite = createSprite("virusSprite.png");
     private Image corpseSprite = createSprite("corpseSprite.png");
@@ -104,7 +106,8 @@ class SimulationPanel extends JPanel {
     private Image sporeSpriteUp = createSprite("sporeSpriteUp.png");
     private Image sporeSpriteDown = createSprite("sporeSpriteDown.png");
     private Image sporeSpriteRight = createSprite("sporeSpriteRight.png");
-    private Image tigerSprite = createSprite("tigerSprite.png");
+    private Image tigerSpriteLeft = createSprite("tigerSpriteLeft.png");
+    private Image tigerSpriteRight = createSprite("tigerSpriteRight.png");
     private Image gorillaSprite = createSprite("gorillaSprite.png");
     private Image crocodileSprite = createSprite("crocodileSprite.png");
     private Image gasSprite;
@@ -117,6 +120,8 @@ class SimulationPanel extends JPanel {
     private Image crocodileUpSprite = createSprite("crocodileUpSprite.png");
     private Image crocodileLeftSprite = createSprite("crocodileLeftSprite.png");
     private Image crocodileRightSprite = createSprite("crocodileRightSprite.png");
+    private Image deerSpriteLeft = createSprite("deerSpriteLeft.png");
+    private Image deerSpriteRight = createSprite("deerSpriteRight.png");
     private final ArrayList<Organism> creatures = new ArrayList<>();
     private final Random random = new Random();
 
@@ -140,6 +145,9 @@ class SimulationPanel extends JPanel {
             //collision handling
             if (creature2 != null && (!(creature1.isPaused())) && (!(creature2.isPaused()))) {
                 switch (creature1.getClass().getSimpleName() + "-" + creature2.getClass().getSimpleName()) {
+
+                    // ORGANISM INTERACTION CASES ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
                     case "Crocodile-Gorilla":
                     case "Gorilla-Crocodile":
 
@@ -190,7 +198,7 @@ class SimulationPanel extends JPanel {
 
                     if (gorilla.getHunger() > 30) {     // if gorilla hunger over 30, eat plant
                         ((Animal)gorilla).eat(plant);
-                        plant.decreaseSize(75);
+                        plant.decreaseSize(90);
                         if (plant.getSize() < 0) {
                             creatures.remove(plant);
                         }
@@ -285,7 +293,7 @@ class SimulationPanel extends JPanel {
 
                         if (gorilla1.getHunger() > 30) {   // if gorilla hunger over 30, eat fungus
                             ((Animal)gorilla1).eat(fungus);
-                            fungus.decreaseSize(75);
+                            fungus.decreaseSize(90);
                             if (fungus.getSize() < 0) {
                                 creatures.remove(fungus);
                             }
@@ -324,6 +332,82 @@ class SimulationPanel extends JPanel {
                                 creature2.setHunger(60);
                                 creature1.pauseInteractions();
                                 creature2.pauseInteractions();
+                            }
+                        }
+                        break;
+
+                    case "Deer-Deer":
+                        if ((creature1.getHunger() < 60) && (creature2.getHunger() < 60) && (creature1.getAge() > 10) && (creature2.getAge() > 10)) {
+                            if (new Random().nextBoolean()) {
+                                reproduce(creature1);
+                                creature1.setHunger(60);
+                                creature2.setHunger(60);
+                                creature1.pauseInteractions();
+                                creature2.pauseInteractions();
+                            }
+                        }
+                        break;
+
+                    case "Deer-Gorilla":
+                    case "Gorilla-Deer":
+                        Organism deer = (creature1 instanceof Deer) ? creature1 : creature2;
+                        Organism gorilla2 = (creature1 instanceof Gorilla) ? creature1 : creature2;
+
+                        if (gorilla2.getHunger() > 30) { // if gorilla hunger over 30, eat deer
+                            ((Animal) gorilla2).eat(deer);
+                            creatures.remove(deer);
+                            gorilla2.pauseInteractions();
+                        }
+                        break;
+
+                    case "Deer-Crocodile":
+                    case "Crocodile-Deer":
+                        Organism deer2 = (creature1 instanceof Deer) ? creature1 : creature2;
+                        Organism crocodile = (creature1 instanceof Crocodile) ? creature1 : creature2;
+
+                        if (crocodile.getHunger() > 30) { // if crocodile hunger over 30, eat deer
+                            ((Animal) crocodile).eat(deer2);
+                            creatures.remove(deer2);
+                            crocodile.pauseInteractions();
+                        }
+                        break;
+
+                    case "Deer-Tiger":
+                    case "Tiger-Deer":
+                        Organism deer3 = (creature1 instanceof Deer) ? creature1 : creature2;
+                        Organism tiger = (creature1 instanceof Tiger) ? creature1 : creature2;
+
+                        if (tiger.getHunger() > 30) { // if tiger hunger over 30, eat deer
+                            ((Animal) tiger).eat(deer3);
+                            creatures.remove(deer3);
+                            tiger.pauseInteractions();
+                        }
+                        break;
+
+                    case "Deer-Plant":
+                    case "Plant-Deer":
+                        Organism deer4 = (creature1 instanceof Deer) ? creature1 : creature2;
+                        Organism plant1 = (creature1 instanceof Plant) ? creature1 : creature2;
+
+                        if (deer4.getHunger() > 30) { // if deer hunger over 30, eat plant
+                            ((Animal) deer4).eat(plant1);
+                            plant1.decreaseSize(90);
+                            if (plant1.getSize() < 0) {
+                                creatures.remove(plant1);
+                            }
+                        }
+                        break;
+
+                    case "Deer-Fungus":
+                    case "Fungus-Deer":
+                        Organism deer5 = (creature1 instanceof Deer) ? creature1 : creature2;
+                        Organism fungus2 = (creature1 instanceof Fungus) ? creature1 : creature2;
+
+                        if (deer5.getHunger() > 30) { // if deer hunger over 30, eat fungus
+                            ((Animal) deer5).eat(fungus2);
+                            fungus2.decreaseSize(90);
+                            if (fungus2.getSize() < 0) {
+                                creatures.remove(fungus2);
                             }
                         }
                         break;
@@ -475,6 +559,7 @@ class SimulationPanel extends JPanel {
     corpse.setX(creature1.getX());
     corpse.setY(creature1.getY());
     creatures.set(index, corpse);
+    System.out.println(creature1.getID() + " starved!");
     }
 
     public void addCreature(Organism creature) {
@@ -526,6 +611,14 @@ class SimulationPanel extends JPanel {
             newCrocodile.setX(creatureToReproduce.getX() + 20);
             newCrocodile.setY(creatureToReproduce.getY() + 20);
             creatures.add(newCrocodile);
+            System.out.println(creatureToReproduce.getID() + " reproduced!");
+            break;
+
+            case "Deer":
+            Deer newDeer = new Deer();
+            newDeer.setX(creatureToReproduce.getX() + 20);
+            newDeer.setY(creatureToReproduce.getY() + 20);
+            creatures.add(newDeer);
             System.out.println(creatureToReproduce.getID() + " reproduced!");
             break;
 
@@ -592,6 +685,10 @@ class SimulationPanel extends JPanel {
             newCreature = new Gorilla();
             break;
 
+            case "Deer":
+            newCreature = new Deer();
+            break;
+
             default:
             System.out.println("Unknown type: " + type);
             break;
@@ -602,37 +699,44 @@ class SimulationPanel extends JPanel {
         panel.addCreature(newCreature);
     }
 
-    public SimulationPanel() {
-    
-    }
-
     public void incrementTime() {              // anything in here will be run every 5 seconds
         ArrayList<Organism> creaturesCopy = new ArrayList<>(creatures);
+        dayTracker++;
+        System.out.println("\n----------------Day " + dayTracker + "----------------");
+
         for (Organism creature : creaturesCopy) {
+
             creature.increaseAge(1);
+            
             if (creature instanceof Animal) {     // applies only to animals
-                creature.increaseHunger(2);   // hunger increases by 2 every 5 seconds
-                if (creature.getHunger() > 79 && ((Animal)creature).getStrength() > 45) {
-                    ((Animal)creature).setStrength(45);  // reduce strength to 45 if hunger greater than 79
+                if (creature instanceof Crocodile) {
+                    creature.increaseHunger(2); // crocodiles gain 2 hunger (dies after 50 days without food)
+                } else if (creature instanceof Tiger) {
+                    creature.increaseHunger(3); // tigers gain 3 hunger (dies after 30 days without food)
+                }  else {
+                    creature.increaseHunger(4); // everything else gains 4 hunger (dies after 25 days without food)
                 }
-                if (creature.getHunger() < 80 && ((Animal)creature).getStrength() < 90) {
+                if (creature.getHunger() > 84 && ((Animal)creature).getStrength() > 45 && !(creature instanceof Deer)) {
+                    ((Animal)creature).setStrength(45);  // reduce strength to 45 if hunger greater than 84
+                }
+                if (creature.getHunger() < 85 && ((Animal)creature).getStrength() < 90 && !(creature instanceof Deer)) {
                     ((Animal)creature).setStrength(90);  // return strength to 90 if hunger was satisfied
                 }
-                if (creature.getHunger() > 120 || creature.getAge() > 200) { // if animal hunger exceeds 100 (no food for 4.16 minutes), or age exceeds 200 (16 minutes), animal becomes corpse (dies)
+                if (creature.getHunger() > 100 || creature.getAge() > 160) { // if animal hunger exceeds 100, or age exceeds 160 days, animal becomes corpse (dies)
                     becomeCorpse(creature);
                 }
             }
             else if (!(creature instanceof Animal)) { // if creature is not instance of Animal
                 if ((creature instanceof Plant) || (creature instanceof Fungus)) { // if plant or fungus...
-                    int randomGrowth = new Random().nextInt(4); // Generate a random number between 0 and 3
+                    int randomGrowth = new Random().nextInt(2); // Generate a random number between 0 and 1
                     creature.increaseSize(randomGrowth); // grow plant/fungus size by random amount
-                    if (creature.getSize() > 100) {  // creature reproduces (seed or spore) when size is over 100 (every 50 seconds or so)
+                    if (creature.getSize() > 120) {  // creature reproduces (seed or spore) when size is over 100 (every 50 seconds or so)
                         reproduce(creature);
-                        creature.decreaseSize(50);
+                        creature.decreaseSize(70);
                     }
                 }
                 else if (creature instanceof Seed) {
-                    if (creature.getAge() > 100) {
+                    if (creature.getAge() > 25) {
                         Plant newPlant = new Plant();
                         newPlant.setX(creature.getX());
                         newPlant.setY(creature.getY());
@@ -641,7 +745,7 @@ class SimulationPanel extends JPanel {
                     }
                 }
                 else if (creature instanceof Spore) {
-                    if (creature.getAge() > 100) {
+                    if (creature.getAge() > 25) {
                         Fungus newFungus = new Fungus();
                         newFungus.setX(creature.getX());
                         newFungus.setY(creature.getY());
@@ -653,6 +757,33 @@ class SimulationPanel extends JPanel {
             }
             if (creature.isPaused()) {     // resume any paused creatures
             creature.resumeInteractions();
+            }
+        } 
+        String[] types = {"Spore", "Seed", "Deer"};
+        for (String type : types) {
+            long count = creatures.stream().filter(creature -> creature.getClass().getSimpleName().equals(type)).count();
+            if (type.equals("Spore")) {
+            long fungusCount = creatures.stream().filter(creature -> creature instanceof Fungus).count();
+            if (count < 5 && fungusCount < 12 && new Random().nextInt(2) == 0) { // 1/2 chance to spawn if conditions met
+                spawnCreature(type, SimulationApp.randX(), SimulationApp.randY(), this);
+            }
+            } else if (type.equals("Seed")) {
+            long plantCount = creatures.stream().filter(creature -> creature instanceof Plant).count();
+            if (count < 5 && plantCount < 12 && new Random().nextInt(2) == 0) { // 1/2 chance to spawn if conditions met
+                spawnCreature(type, SimulationApp.randX(), SimulationApp.randY(), this);
+            }
+            } else if (type.equals("Deer")) {
+            if (count < 10 && new Random().nextInt(4) == 0) { // 1/4 chance to spawn if less than 10 exist
+                spawnCreature(type, SimulationApp.randX(), SimulationApp.randY(), this);
+            }
+            }
+        }
+
+        String[] creatureTypes = {"Crocodile", "Tiger", "Gorilla"};
+        for (String type : creatureTypes) {
+            long count = creatures.stream().filter(creature -> creature.getClass().getSimpleName().equals(type)).count();
+            if (count < 5 && new Random().nextInt(6) == 0) { // 1/6 chance to spawn if less than 5 exist
+            spawnCreature(type, SimulationApp.randX(), SimulationApp.randY(), this);
             }
         }
     }
@@ -671,7 +802,7 @@ class SimulationPanel extends JPanel {
         int movechance = 3; // chance (out of 100) of moving directions in given tick
         int speed = 1; //this will probably be an attribute of organism class in the future
 
-        Timer movementTimer = new Timer(17, e -> { // runs ~60 times per second 
+        Timer movementTimer = new Timer(6, e -> { // runs at 167fps
             // Update creature positions
             for (Organism creature : creatures) {
                 if (creature.canMove()){
@@ -698,13 +829,8 @@ class SimulationPanel extends JPanel {
             repaint();
         });
         movementTimer.start();
-        Timer incrementTimeTimer = new Timer(5000, e -> { // runs every 5 seconds
-            incrementTime();
-            // for (Organism creature : creatures) {  
-            //     if (creature instanceof Animal) {
-            //     System.out.println(getStats(creature));         // for testing purposes, prints stats of all Animals
-            //     }
-            // }                                                  
+        Timer incrementTimeTimer = new Timer(2750, e -> { // runs every 2.75 seconds
+            incrementTime();                                            
         });
         incrementTimeTimer.start();
     }
@@ -742,15 +868,16 @@ class SimulationPanel extends JPanel {
     }
 
     private void draw(Graphics g, int x, int y, Organism creature) {
+
         if (creature instanceof Fungus) {
             // Use the sprite image for Fungus
             if (fungusSprite2 != null) {
             g.drawImage(fungusSprite2, x, y, creature.getSize(), creature.getSize(), this);
             } else {
-            // Fallback to cyan rectangle if the image is not loaded
             g.setColor(Color.CYAN);
             g.fillRect(x, y, creature.getSize(), creature.getSize());
             }
+
         } else if (creature instanceof Spore) {
             // Use the sprite image for Spore
             if (sporeSprite != null) {
@@ -775,64 +902,74 @@ class SimulationPanel extends JPanel {
                         }
                 }
             } else {
-            // Fallback to yellow oval if the image is not loaded
             g.setColor(Color.YELLOW);
             g.fillOval(x, y, creature.getSize(), creature.getSize());
             }
+
         } else if (creature instanceof Plant) {
             // Use the sprite image for Plant
             if (plantSprite != null) {
             g.drawImage(plantSprite, x, y, creature.getSize(), creature.getSize(), this);
             } else {
-            // Fallback to green rounded rectangle if the image is not loaded
             g.setColor(Color.GREEN);
             g.fillRoundRect(x, y, creature.getSize(), creature.getSize(), 10, 10);
             }
+            
         } else if (creature instanceof Seed) {
             // Use the sprite image for Seed
             if (seedSprite != null) {
             g.drawImage(seedSprite, x, y, creature.getSize(), creature.getSize(), this);
             } else {
-            // Fallback to orange oval if the image is not loaded
             g.setColor(Color.ORANGE);
             g.fillOval(x, y, creature.getSize(), creature.getSize());
             }
+
         } else if (creature instanceof Bacteria) {
             // Use the sprite image for Bacteria
             if (bacteriaSprite != null) {
             g.drawImage(bacteriaSprite, x, y, creature.getSize(), creature.getSize(), this);
             } else {
-            // Fallback to gray oval if the image is not loaded
             g.setColor(Color.GRAY);
             g.fillOval(x, y, creature.getSize(), creature.getSize());
             }
+
         } else if (creature instanceof Virus) {
             // Use the sprite image for Virus
             if (virusSprite != null) {
             g.drawImage(virusSprite, x, y, creature.getSize(), creature.getSize(), this);
-            } else {
-            // Fallback to black rectangle if the image is not loaded
+            } else {            
             g.setColor(Color.BLACK);
             g.fillRect(x, y, creature.getSize(), creature.getSize());
             }
+
         } else if (creature instanceof Corpse) {
             // Use the sprite image for Corpse
             if (corpseSprite != null) {
             g.drawImage(corpseSprite, x, y, creature.getSize() * 2, creature.getSize(), this);
             } else {
-            // Fallback to dark gray oval if the image is not loaded
             g.setColor(Color.DARK_GRAY);
             g.fillOval(x, y, creature.getSize(), creature.getSize());
-            }
+            } 
+
         } else if (creature instanceof Tiger) {
-            // Use the sprite image for Tiger
-            if (tigerSprite != null) {
-            g.drawImage(tigerSprite, x, y, creature.getSize(), (int)(creature.getSize() * 0.75), this);
+                // Use the sprite image for Tiger
+            if (tigerSpriteLeft != null && tigerSpriteRight != null) {
+            switch (creature.getDx()) {
+                case 1:
+                g.drawImage(tigerSpriteRight, x, y, creature.getSize(), (int)(creature.getSize() * 0.75), this);
+                break;
+                case -1:
+                g.drawImage(tigerSpriteLeft, x, y, creature.getSize(), (int)(creature.getSize() * 0.75), this);
+                break;
+                default:
+                g.drawImage(tigerSpriteRight, x, y, creature.getSize(), (int)(creature.getSize() * 0.75), this);
+                break;
+            }
             } else {
-            // Fallback to orange rectangle if the image is not loaded
             g.setColor(Color.ORANGE);
             g.fillRect(x, y, creature.getSize(), creature.getSize());
             }
+
         } else if (creature instanceof Gorilla) {
             // Use the sprite image for Gorilla
             if (gorillaSprite != null) {
@@ -857,7 +994,30 @@ class SimulationPanel extends JPanel {
                     }
                 }
             }
-        } else if (creature instanceof Crocodile) {
+        } 
+        
+        else if (creature instanceof Deer) {
+            // Use the sprite image for Deer
+            if (deerSpriteLeft != null && deerSpriteRight != null) {
+                switch (creature.getDx()) {
+                    case 1:
+                        g.drawImage(deerSpriteRight, x, y, creature.getSize(), creature.getSize(), this);
+                        break;
+                    case -1:
+                        g.drawImage(deerSpriteLeft, x, y, creature.getSize(), creature.getSize(), this);
+                        break;
+                    default:
+                        g.drawImage(deerSpriteRight, x, y, creature.getSize(), creature.getSize(), this);
+                        break;
+                }
+            } else {
+                g.setColor(new Color(139, 69, 19)); // Brown color
+                g.fillRect(x, y, creature.getSize(), creature.getSize());
+            }
+        }
+
+        
+        else if (creature instanceof Crocodile) {
                 switch (creature.getDx()) {
                     case 1:
                         g.drawImage(crocodileRightSprite, x, y, creature.getSize(), creature.getSize()/2, this);
