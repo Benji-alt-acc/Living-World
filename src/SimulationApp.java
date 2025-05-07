@@ -17,8 +17,9 @@ import organisms.multicellular.plants.Plant;
 import organisms.multicellular.plants.Seed;
 import organisms.singlecelled.Bacteria;
 import organisms.singlecelled.Virus;
+import world.Weather;
 
-
+//MINE
 public class SimulationApp {
     public static void main(String[] args) throws IOException {
         JFrame frame = new JFrame("A Living World");
@@ -27,6 +28,13 @@ public class SimulationApp {
         frame.setSize(1920, 1080);
         frame.add(panel);
         frame.setVisible(true);
+
+        //initializes overlay panel to display weather
+        SimulationPanel.ImageOverlayPanel overlay = panel.new ImageOverlayPanel("snow_falling.gif", 0.5f); // 50% opacity
+        overlay.setSize(frame.getSize());
+        frame.setGlassPane(overlay);
+        overlay.setVisible(true);
+
         
         panel.spawnCreature("Gorilla", SimulationApp.randX(), SimulationApp.randY(), panel);
         panel.spawnCreature("Gorilla", SimulationApp.randX(), SimulationApp.randY(), panel);
@@ -136,6 +144,40 @@ class SimulationPanel extends JPanel {
                 }
             }
         return null;
+    }
+
+    // Custom JPanel for the image overlay
+    class ImageOverlayPanel extends JPanel {
+        private ImageIcon gifIcon;
+        private float opacity;
+    
+        public ImageOverlayPanel(String gifPath, float opacity) {
+            this.opacity = opacity;
+            try {
+                //Loads GIF
+                gifIcon = new ImageIcon(getClass().getResource("/img/" + gifPath));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            setOpaque(false); // Make the panel transparent
+        }
+    
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            if (gifIcon != null) {
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
+    
+                g2d.drawImage(gifIcon.getImage(), 0, 0, getWidth(), getHeight(), this);
+    
+                //Adds a semi-transparent white overlay to brighten the GIF
+                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f)); // Adjust the alpha for brightness
+                g2d.setColor(new Color(255, 255, 255)); // White color
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        }
+        
     }
 
     public void test() {
@@ -1039,5 +1081,8 @@ class SimulationPanel extends JPanel {
                     }
                 }
         }
+
+      
+
     }
 }
