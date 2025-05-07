@@ -844,7 +844,7 @@ class SimulationPanel extends JPanel {
         int movechance = 3; // chance (out of 100) of moving directions in given tick
         int speed = 1; //this will probably be an attribute of organism class in the future
 
-        Timer movementTimer = new Timer(6, e -> { // runs at 167fps
+        Timer movementTimer = new Timer(12, e -> { // runs at 83fps
             // Update creature positions
             for (Organism creature : creatures) {
                 if (creature.canMove()){
